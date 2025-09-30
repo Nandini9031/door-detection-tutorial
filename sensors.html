@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Possibilities - Door Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">Door Detection Tutorial</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="problem.html">Problem & Users</a></li>
+                <li><a href="sensors.html" class="active">Sensors</a></li>
+                <li><a href="classical.html">Classical Methods</a></li>
+                <li><a href="learning.html">Learning Methods</a></li>
+                <li><a href="evaluation.html">Success & Failures</a></li>
+                <li><a href="challenges.html">Challenges</a></li>
+                <li><a href="future.html">Future</a></li>
+                <li><a href="quiz.html">Interactive Quiz</a></li>
+                <li><a href="bibliography.html">Bibliography</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="content-section">
+            <div class="audio-player">
+                <p>🔊 <strong>Audio Narration:</strong> Listen to this section</p>
+                <audio controls>
+                    <source src="audio/sensors.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="audio-note"><em>Note: Add your recorded narration as audio/sensors.mp3</em></p>
+            </div>
+
+            <h2>2. Sensor Possibilities for Door Detection</h2>
+            
+            <h3>Overview of Mobile Sensors</h3>
+            <p>
+                Modern smartphones are equipped with a rich array of sensors that can be leveraged for door detection. 
+                The choice of sensor(s) involves trade-offs between accuracy, power consumption, cost, and availability 
+                across devices <a href="bibliography.html#ref1">[1]</a>.
+            </p>
+
+            <h3>Primary Sensor: RGB Camera</h3>
+            <p>
+                The RGB camera is the most common and essential sensor for door detection. Nearly all smartphones 
+                have at least one rear-facing camera, making it the most accessible option.
+            </p>
+
+            <div class="highlight-box">
+                <h3>📷 RGB Camera Advantages</h3>
+                <ul>
+                    <li><strong>Universal availability:</strong> Present on all smartphones</li>
+                    <li><strong>Rich visual information:</strong> Color, texture, edges, and patterns</li>
+                    <li><strong>High resolution:</strong> Modern phones offer 12MP+ cameras</li>
+                    <li><strong>Mature algorithms:</strong> Decades of computer vision research</li>
+                    <li><strong>Low cost:</strong> No additional hardware needed</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ RGB Camera Limitations</h4>
+                <ul>
+                    <li><strong>Lighting dependency:</strong> Poor performance in low light or glare</li>
+                    <li><strong>No depth information:</strong> Cannot directly measure distance</li>
+                    <li><strong>Texture confusion:</strong> May confuse door-like patterns (posters, windows)</li>
+                    <li><strong>Reflections:</strong> Glass doors and mirrors cause false detections</li>
+                </ul>
+            </div>
+
+            <div class="image-container">
+                <img src="images/rgb-camera-detection.jpg" alt="RGB camera detecting a door with bounding box" class="main-image">
+                <p class="image-caption">Figure 5: RGB camera-based door detection showing bounding box [Placeholder]</p>
+            </div>
+
+            <h3>Depth Sensors</h3>
+            <p>
+                Depth sensors provide 3D information about the scene, which can significantly improve door detection 
+                by identifying planar surfaces and measuring distances.
+            </p>
+
+            <h4>Types of Depth Sensors</h4>
+
+            <div class="info-box">
+                <h4>1. Time-of-Flight (ToF) Sensors</h4>
+                <p>
+                    ToF sensors emit infrared light and measure the time it takes to reflect back. Examples include 
+                    the LiDAR scanner on iPhone 12 Pro and later models.
+                </p>
+                <p><strong>Pros:</strong> Fast, accurate depth maps (up to 5m range), works in darkness</p>
+                <p><strong>Cons:</strong> Limited to high-end devices, higher power consumption, struggles with 
+                reflective/transparent surfaces</p>
+            </div>
+
+            <div class="info-box">
+                <h4>2. Structured Light Sensors</h4>
+                <p>
+                    Projects a known pattern (dots or lines) and analyzes distortion to compute depth. Used in 
+                    iPhone Face ID and some Android devices.
+                </p>
+                <p><strong>Pros:</strong> High accuracy at close range (&lt;1m), good for detail</p>
+                <p><strong>Cons:</strong> Limited range, affected by bright sunlight, not on all devices</p>
+            </div>
+
+            <div class="info-box">
+                <h4>3. Stereo Cameras</h4>
+                <p>
+                    Uses two cameras to compute depth via triangulation, similar to human binocular vision.
+                </p>
+                <p><strong>Pros:</strong> Passive (no IR emitter), works outdoors, increasingly common (dual-camera phones)</p>
+                <p><strong>Cons:</strong> Requires calibration, computationally intensive, struggles with textureless surfaces</p>
+            </div>
+
+            <div class="image-container">
+                <img src="images/depth-sensor-comparison.jpg" alt="Comparison of RGB vs depth sensor output" class="main-image">
+                <p class="image-caption">Figure 6: RGB image (left) vs. depth map (right) for door detection [Placeholder]</p>
+            </div>
+
+            <h3>Complementary Sensors</h3>
+
+            <h4>Inertial Measurement Unit (IMU)</h4>
+            <p>
+                The IMU combines accelerometer, gyroscope, and magnetometer data to track device orientation and movement.
+            </p>
+            <ul>
+                <li><strong>Use case:</strong> Stabilize camera feed, estimate user walking speed, predict door approach</li>
+                <li><strong>Availability:</strong> Universal on smartphones</li>
+                <li><strong>Integration:</strong> Can trigger door detection when user is walking forward</li>
+            </ul>
+
+            <h4>Ambient Light Sensor</h4>
+            <p>
+                Measures surrounding light levels to adjust camera settings and algorithm parameters.
+            </p>
+            <ul>
+                <li><strong>Use case:</strong> Adapt detection thresholds for low-light conditions</li>
+                <li><strong>Benefit:</strong> Improve robustness across lighting variations</li>
+            </ul>
+
+            <h4>Flashlight/Torch</h4>
+            <p>
+                The LED flash can serve as an active illumination source in dark environments.
+            </p>
+            <ul>
+                <li><strong>Use case:</strong> Illuminate dark hallways or unlit doorways</li>
+                <li><strong>Trade-off:</strong> Drains battery, may disturb others, can cause glare</li>
+            </ul>
+
+            <h3>Sensor Fusion Approaches</h3>
+            <p>
+                Combining multiple sensors often yields better results than any single sensor. Common fusion strategies include:
+            </p>
+
+            <div class="algorithm-box">
+                <h4>RGB + Depth Fusion</h4>
+                <ol class="algorithm-steps">
+                    <li>Capture aligned RGB and depth images</li>
+                    <li>Detect door candidates in RGB using edge/color features</li>
+                    <li>Validate candidates using depth discontinuities (door frame edges)</li>
+                    <li>Measure door distance and orientation from depth map</li>
+                    <li>Combine confidence scores from both modalities</li>
+                </ol>
+                <p><strong>Result:</strong> Higher accuracy, fewer false positives from posters/windows</p>
+            </div>
+
+            <div class="algorithm-box">
+                <h4>RGB + IMU Fusion</h4>
+                <ol class="algorithm-steps">
+                    <li>Track user motion and device orientation via IMU</li>
+                    <li>Predict likely door locations based on walking direction</li>
+                    <li>Focus RGB detection in predicted regions (reduce search space)</li>
+                    <li>Stabilize bounding boxes across frames using motion model</li>
+                    <li>Trigger audio feedback when user approaches detected door</li>
+                </ol>
+                <p><strong>Result:</strong> Faster processing, smoother user experience</p>
+            </div>
+
+            <h3>Sensor Selection Trade-offs</h3>
+            <p>
+                Choosing the right sensor configuration depends on your priorities:
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background: var(--primary-color); color: white;">
+                        <th style="padding: 1rem; text-align: left;">Sensor</th>
+                        <th style="padding: 1rem; text-align: left;">Accuracy</th>
+                        <th style="padding: 1rem; text-align: left;">Device Coverage</th>
+                        <th style="padding: 1rem; text-align: left;">Power Use</th>
+                        <th style="padding: 1rem; text-align: left;">Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;"><strong>RGB Only</strong></td>
+                        <td style="padding: 1rem;">Medium</td>
+                        <td style="padding: 1rem;">100%</td>
+                        <td style="padding: 1rem;">Low</td>
+                        <td style="padding: 1rem;">Maximum compatibility</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><strong>RGB + ToF</strong></td>
+                        <td style="padding: 1rem;">High</td>
+                        <td style="padding: 1rem;">~20%</td>
+                        <td style="padding: 1rem;">Medium</td>
+                        <td style="padding: 1rem;">Premium devices, best accuracy</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;"><strong>RGB + Stereo</strong></td>
+                        <td style="padding: 1rem;">Medium-High</td>
+                        <td style="padding: 1rem;">~50%</td>
+                        <td style="padding: 1rem;">Medium</td>
+                        <td style="padding: 1rem;">Balance of accuracy and availability</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><strong>RGB + IMU</strong></td>
+                        <td style="padding: 1rem;">Medium</td>
+                        <td style="padding: 1rem;">100%</td>
+                        <td style="padding: 1rem;">Low</td>
+                        <td style="padding: 1rem;">Smooth UX, motion tracking</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Practical Recommendations</h3>
+            <p>
+                For a mobile door detection app targeting accessibility users:
+            </p>
+
+            <div class="highlight-box">
+                <h3>✅ Recommended Sensor Strategy</h3>
+                <ol>
+                    <li><strong>Baseline:</strong> RGB camera (universal compatibility)</li>
+                    <li><strong>Enhanced mode:</strong> RGB + depth when available (automatic detection)</li>
+                    <li><strong>Motion tracking:</strong> Always use IMU for stabilization and context</li>
+                    <li><strong>Adaptive lighting:</strong> Monitor ambient light sensor, use flash sparingly</li>
+                    <li><strong>Graceful degradation:</strong> Maintain functionality even with RGB-only</li>
+                </ol>
+            </div>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>RGB cameras are essential and universally available</li>
+                <li>Depth sensors significantly improve accuracy but limit device compatibility</li>
+                <li>Sensor fusion combines strengths and mitigates individual weaknesses</li>
+                <li>IMU data enhances user experience through motion-aware processing</li>
+                <li>Design for graceful degradation across device capabilities</li>
+            </ul>
+
+            <div class="navigation-buttons" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a href="problem.html" class="btn">← Previous: Problem & Users</a>
+                <a href="classical.html" class="btn btn-primary">Next: Classical Methods →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nandini - Computer Vision Tutorial Project</p>
+    </footer>
+</body>
+</html>
+

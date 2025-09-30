@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenges - Door Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">Door Detection Tutorial</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="problem.html">Problem & Users</a></li>
+                <li><a href="sensors.html">Sensors</a></li>
+                <li><a href="classical.html">Classical Methods</a></li>
+                <li><a href="learning.html">Learning Methods</a></li>
+                <li><a href="evaluation.html">Success & Failures</a></li>
+                <li><a href="challenges.html" class="active">Challenges</a></li>
+                <li><a href="future.html">Future</a></li>
+                <li><a href="quiz.html">Interactive Quiz</a></li>
+                <li><a href="bibliography.html">Bibliography</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="content-section">
+            <div class="audio-player">
+                <p>🔊 <strong>Audio Narration:</strong> Listen to this section</p>
+                <audio controls>
+                    <source src="audio/challenges.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="audio-note"><em>Note: Add your recorded narration as audio/challenges.mp3</em></p>
+            </div>
+
+            <h2>6. Key Challenges in Mobile Door Detection</h2>
+            
+            <h3>Overview</h3>
+            <p>
+                Despite significant progress, mobile door detection for accessibility faces several persistent 
+                challenges. This section explores technical, practical, and user experience obstacles that 
+                researchers and developers must address <a href="bibliography.html#ref5">[5]</a>.
+            </p>
+
+            <h3>Challenge 1: Generalization Across Environments</h3>
+            <p>
+                Door detection systems must work across vastly different building types and architectural styles.
+            </p>
+
+            <div class="warning-box">
+                <h4>⚠️ The Generalization Problem</h4>
+                <p>
+                    A model trained on university buildings may fail in hospitals, shopping malls, or residential 
+                    homes due to different door designs, materials, and layouts.
+                </p>
+                <ul>
+                    <li><strong>Domain shift:</strong> Training data doesn't match deployment environment</li>
+                    <li><strong>Long-tail distribution:</strong> Rare door types (revolving, sliding) underrepresented</li>
+                    <li><strong>Geographic variation:</strong> Door styles differ across countries and cultures</li>
+                </ul>
+            </div>
+
+            <div class="image-container">
+                <img src="images/door-diversity.jpg" alt="Various door types from different environments" class="main-image">
+                <p class="image-caption">Figure 16: Door diversity - (a) Office, (b) Hospital, (c) Residential, (d) Mall [Placeholder]</p>
+            </div>
+
+            <p><strong>Current Solutions:</strong></p>
+            <ul>
+                <li>Train on diverse datasets covering multiple building types</li>
+                <li>Use domain adaptation techniques to transfer knowledge</li>
+                <li>Implement online learning to adapt to new environments</li>
+                <li>Combine classical (generalizable) and learning (accurate) methods</li>
+            </ul>
+
+            <h3>Challenge 2: Real-Time Performance and Latency</h3>
+            <p>
+                For safe navigation, users need immediate feedback. Delays of &gt;200ms feel sluggish and can 
+                cause users to miss doors or collide with obstacles.
+            </p>
+
+            <div class="highlight-box">
+                <h3>⏱️ Latency Budget Breakdown</h3>
+                <ul>
+                    <li><strong>Image capture:</strong> 16-33ms (30-60 FPS camera)</li>
+                    <li><strong>Preprocessing:</strong> 5-10ms (resize, normalize)</li>
+                    <li><strong>Inference:</strong> 25-50ms (model forward pass)</li>
+                    <li><strong>Post-processing:</strong> 5-10ms (NMS, filtering)</li>
+                    <li><strong>Rendering/Audio:</strong> 10-20ms (UI update, TTS)</li>
+                    <li><strong>Total:</strong> 61-123ms (acceptable for real-time)</li>
+                </ul>
+            </div>
+
+            <p>
+                <strong>Optimization Strategies:</strong>
+            </p>
+            <ul>
+                <li>Use mobile-optimized models (YOLOv8-Nano, MobileNet-SSD)</li>
+                <li>Reduce input resolution (640×640 → 416×416) for faster inference</li>
+                <li>Leverage hardware acceleration (GPU, NPU, DSP on mobile SoCs)</li>
+                <li>Skip frames: process every 2nd or 3rd frame, interpolate between</li>
+                <li>Adaptive processing: reduce quality in low-battery mode</li>
+            </ul>
+
+            <h3>Challenge 3: Battery Life and Power Consumption</h3>
+            <p>
+                Continuous camera use and neural network inference drain battery rapidly. Users need all-day operation.
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background: var(--primary-color); color: white;">
+                        <th style="padding: 1rem; text-align: left;">Component</th>
+                        <th style="padding: 1rem; text-align: left;">Power Draw</th>
+                        <th style="padding: 1rem; text-align: left;">Battery Impact (4000mAh)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">Camera (30 FPS)</td>
+                        <td style="padding: 1rem;">300-500 mW</td>
+                        <td style="padding: 1rem;">~3 hours continuous</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">Neural Network (GPU)</td>
+                        <td style="padding: 1rem;">800-1200 mW</td>
+                        <td style="padding: 1rem;">~2 hours continuous</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">Display (if on)</td>
+                        <td style="padding: 1rem;">400-600 mW</td>
+                        <td style="padding: 1rem;">~3 hours continuous</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><strong>Total (all active)</strong></td>
+                        <td style="padding: 1rem;"><strong>1500-2300 mW</strong></td>
+                        <td style="padding: 1rem;"><strong>~1.5-2 hours</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>Power-Saving Techniques:</strong></p>
+            <ul>
+                <li><strong>Motion-triggered activation:</strong> Only run detection when IMU detects walking</li>
+                <li><strong>Duty cycling:</strong> Process 1 frame/second when idle, 10 FPS when moving</li>
+                <li><strong>Display off:</strong> Audio-only feedback mode (saves 400-600 mW)</li>
+                <li><strong>Quantized models:</strong> INT8 inference uses 30-40% less power than FP32</li>
+                <li><strong>NPU acceleration:</strong> Dedicated AI chips (e.g., Apple Neural Engine) more efficient than GPU</li>
+            </ul>
+
+            <h3>Challenge 4: User Experience for Low-Vision and Senior Users</h3>
+            <p>
+                Technical accuracy is necessary but not sufficient. The system must provide intuitive, non-intrusive 
+                feedback that enhances rather than hinders navigation.
+            </p>
+
+            <div class="info-box">
+                <h4>🎯 UX Design Considerations</h4>
+                <ul>
+                    <li><strong>Audio feedback:</strong> Spatial audio indicating door direction (left/right/center)</li>
+                    <li><strong>Haptic patterns:</strong> Vibration intensity increases as user approaches door</li>
+                    <li><strong>Confidence communication:</strong> Different tones for high vs. low confidence detections</li>
+                    <li><strong>False positive handling:</strong> Avoid alarming users with incorrect detections</li>
+                    <li><strong>Customization:</strong> Adjustable sensitivity, feedback modes, audio volume</li>
+                </ul>
+            </div>
+
+            <h4>Research Insights on User Experience</h4>
+            <div class="info-box">
+                <h4>💡 Findings from HCI Research</h4>
+                <p>
+                    Research on accessible navigation systems emphasizes that the biggest challenge isn't just detection
+                    accuracy—it's information overload <a href="bibliography.html#ref5">[5]</a>. Users don't want constant
+                    notifications about every door. They need context-aware assistance that answers: "Is this the door I'm
+                    looking for?"
+                </p>
+                <p>
+                    Studies show that systems should learn user patterns and only alert for relevant doors. Privacy is also
+                    critical—users prefer on-device processing rather than sending camera data to the cloud.
+                </p>
+                <p><strong>Key Takeaway:</strong> Smart filtering and on-device processing are essential for user acceptance.</p>
+            </div>
+
+            <h3>Challenge 5: Dataset Availability and Annotation</h3>
+            <p>
+                Deep learning requires large labeled datasets, but door detection datasets are scarce and limited.
+            </p>
+
+            <div class="warning-box">
+                <h4>⚠️ Dataset Challenges</h4>
+                <ul>
+                    <li><strong>Limited public datasets:</strong> Most research uses private, institution-specific data</li>
+                    <li><strong>Annotation cost:</strong> Labeling 10,000 images costs $5,000-$10,000</li>
+                    <li><strong>Privacy concerns:</strong> Indoor images may contain people, sensitive information</li>
+                    <li><strong>Bias:</strong> Datasets skewed toward certain building types or geographic regions</li>
+                    <li><strong>Glass door underrepresentation:</strong> Hard to collect and annotate</li>
+                </ul>
+            </div>
+
+            <p><strong>Emerging Solutions:</strong></p>
+            <ul>
+                <li>Synthetic data generation using 3D rendering (Unity, Unreal Engine)</li>
+                <li>Semi-supervised learning: use unlabeled data with pseudo-labels</li>
+                <li>Active learning: prioritize labeling of difficult/uncertain examples</li>
+                <li>Crowdsourced annotation with privacy-preserving techniques</li>
+            </ul>
+
+            <h3>Challenge 6: Handling Edge Cases</h3>
+            <p>
+                Real-world deployment reveals countless edge cases not present in training data:
+            </p>
+
+            <ul>
+                <li><strong>Revolving doors:</strong> Circular motion, no clear "door" rectangle</li>
+                <li><strong>Automatic sliding doors:</strong> May be open (no visible door) or closed</li>
+                <li><strong>Curtain doors:</strong> Flexible material, no rigid structure</li>
+                <li><strong>Damaged doors:</strong> Broken, graffitied, or under construction</li>
+                <li><strong>Camouflaged doors:</strong> Painted to blend with walls (secret doors, panic rooms)</li>
+                <li><strong>Elevator doors:</strong> Should they be detected as "doors" or separate class?</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="images/edge-cases.jpg" alt="Edge cases in door detection" class="main-image">
+                <p class="image-caption">Figure 17: Edge cases - (a) Revolving, (b) Sliding, (c) Curtain, (d) Camouflaged [Placeholder]</p>
+            </div>
+
+            <h3>Challenge 7: Multi-Modal Integration</h3>
+            <p>
+                Combining vision with other sensors (depth, audio, GPS) improves robustness but adds complexity:
+            </p>
+
+            <ul>
+                <li><strong>Sensor synchronization:</strong> Aligning timestamps from camera, IMU, depth sensor</li>
+                <li><strong>Calibration:</strong> RGB-depth alignment requires factory calibration</li>
+                <li><strong>Fusion strategies:</strong> Early fusion (combine raw data) vs. late fusion (combine predictions)</li>
+                <li><strong>Graceful degradation:</strong> Maintain functionality when depth sensor unavailable</li>
+            </ul>
+
+            <h3>Challenge 8: Accessibility and Inclusivity</h3>
+            <p>
+                The system must serve diverse users with varying needs:
+            </p>
+
+            <div class="highlight-box">
+                <h3>👥 User Diversity</h3>
+                <ul>
+                    <li><strong>Blind users:</strong> Need audio-only interface, no visual feedback</li>
+                    <li><strong>Low-vision users:</strong> May benefit from visual highlights + audio</li>
+                    <li><strong>Deaf-blind users:</strong> Require haptic-only feedback</li>
+                    <li><strong>Seniors:</strong> May have hearing loss, prefer simple interfaces</li>
+                    <li><strong>Cognitive impairments:</strong> Need clear, consistent feedback patterns</li>
+                </ul>
+            </div>
+
+            <p>
+                <strong>Design Principle:</strong> Provide multiple feedback modalities (audio, haptic, visual) and 
+                allow users to customize based on their preferences and abilities <a href="bibliography.html#ref3">[3]</a>.
+            </p>
+
+            <h3>Challenge 9: Privacy and Ethics</h3>
+            <p>
+                Continuous camera use raises privacy concerns:
+            </p>
+
+            <ul>
+                <li><strong>Bystander privacy:</strong> Camera may capture other people in public spaces</li>
+                <li><strong>Data storage:</strong> Should images be saved? For how long?</li>
+                <li><strong>Cloud processing:</strong> Sending images to servers exposes sensitive data</li>
+                <li><strong>Consent:</strong> Do building occupants consent to being recorded?</li>
+            </ul>
+
+            <p><strong>Best Practices:</strong></p>
+            <ul>
+                <li>On-device processing (no cloud uploads)</li>
+                <li>No image storage (process and discard immediately)</li>
+                <li>Visual indicator (LED) when camera is active</li>
+                <li>Blur faces and identifiable features in any saved data</li>
+            </ul>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Generalization across diverse environments remains difficult</li>
+                <li>Real-time performance requires careful optimization (latency &lt;100ms)</li>
+                <li>Battery life limits continuous operation to 1.5-2 hours</li>
+                <li>UX design is as important as technical accuracy</li>
+                <li>Dataset scarcity hinders deep learning progress</li>
+                <li>Edge cases (revolving doors, sliding doors) need special handling</li>
+                <li>Privacy and ethics must be prioritized in design</li>
+            </ul>
+
+            <div class="navigation-buttons" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a href="evaluation.html" class="btn">← Previous: Success & Failures</a>
+                <a href="future.html" class="btn btn-primary">Next: Future & Conclusions →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nandini - Computer Vision Tutorial Project</p>
+    </footer>
+</body>
+</html>
+

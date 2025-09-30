@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classical Methods - Door Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">Door Detection Tutorial</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="problem.html">Problem & Users</a></li>
+                <li><a href="sensors.html">Sensors</a></li>
+                <li><a href="classical.html" class="active">Classical Methods</a></li>
+                <li><a href="learning.html">Learning Methods</a></li>
+                <li><a href="evaluation.html">Success & Failures</a></li>
+                <li><a href="challenges.html">Challenges</a></li>
+                <li><a href="future.html">Future</a></li>
+                <li><a href="quiz.html">Interactive Quiz</a></li>
+                <li><a href="bibliography.html">Bibliography</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="content-section">
+            <div class="audio-player">
+                <p>🔊 <strong>Audio Narration:</strong> Listen to this section</p>
+                <audio controls>
+                    <source src="audio/classical.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="audio-note"><em>Note: Add your recorded narration as audio/classical.mp3</em></p>
+            </div>
+
+            <h2>3. Classical Computer Vision Methods</h2>
+            
+            <h3>Introduction to Classical Approaches</h3>
+            <p>
+                Before deep learning dominated computer vision, researchers developed sophisticated hand-crafted 
+                algorithms for door detection. These classical methods exploit geometric properties, edge patterns, 
+                and color cues that characterize doors <a href="bibliography.html#ref1">[1]</a>.
+            </p>
+
+            <p>
+                Classical methods remain relevant today because they:
+            </p>
+            <ul>
+                <li>Require minimal computational resources (ideal for older mobile devices)</li>
+                <li>Work without training data or neural networks</li>
+                <li>Provide interpretable results (you can see why a detection occurred)</li>
+                <li>Can complement deep learning approaches in hybrid systems</li>
+            </ul>
+
+            <h3>Method 1: Edge Detection and Rectangle Finding</h3>
+            <p>
+                Doors typically appear as rectangles with strong vertical and horizontal edges. This fundamental 
+                observation drives many classical detection algorithms.
+            </p>
+
+            <div class="algorithm-box">
+                <h4>Algorithm: Edge-Based Door Detection</h4>
+                <ol class="algorithm-steps">
+                    <li><strong>Preprocessing:</strong> Convert RGB image to grayscale, apply Gaussian blur to reduce noise</li>
+                    <li><strong>Edge Detection:</strong> Apply Canny edge detector to find strong gradients</li>
+                    <li><strong>Line Detection:</strong> Use Hough Line Transform to identify straight lines</li>
+                    <li><strong>Line Filtering:</strong> Keep only near-vertical lines (80-100° from horizontal)</li>
+                    <li><strong>Rectangle Formation:</strong> Group parallel vertical lines with connecting horizontal lines</li>
+                    <li><strong>Validation:</strong> Check aspect ratio (height/width ≈ 2-3 for typical doors)</li>
+                    <li><strong>Output:</strong> Bounding boxes around validated door candidates</li>
+                </ol>
+            </div>
+
+            <div class="code-block">
+<pre>
+# Python pseudocode using OpenCV
+import cv2
+import numpy as np
+
+def detect_door_edges(image):
+    # Step 1-2: Preprocessing and edge detection
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edges = cv2.Canny(blurred, threshold1=50, threshold2=150)
+    
+    # Step 3-4: Hough Line Transform
+    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, 
+                            threshold=100, minLineLength=100, maxLineGap=10)
+    
+    # Step 5: Filter vertical lines
+    vertical_lines = []
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        angle = np.abs(np.arctan2(y2-y1, x2-x1) * 180 / np.pi)
+        if 80 &lt; angle &lt; 100:  # Near-vertical
+            vertical_lines.append(line)
+    
+    # Step 6-7: Find rectangles and validate aspect ratio
+    door_candidates = find_rectangles(vertical_lines)
+    doors = [d for d in door_candidates if 1.5 &lt; d.height/d.width &lt; 3.5]
+    
+    return doors
+</pre>
+            </div>
+
+            <div class="image-container">
+                <img src="images/edge-detection-steps.jpg" alt="Steps of edge-based door detection" class="main-image">
+                <p class="image-caption">Figure 7: Edge detection pipeline - (a) Original, (b) Edges, (c) Lines, (d) Detected door [Placeholder]</p>
+            </div>
+
+            <div class="info-box">
+                <h4>💡 Strengths of Edge-Based Methods</h4>
+                <ul>
+                    <li>Fast execution (real-time on mobile devices)</li>
+                    <li>Works well with high-contrast doors (dark door, light wall)</li>
+                    <li>No training data required</li>
+                    <li>Robust to lighting variations (edges persist)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Limitations</h4>
+                <ul>
+                    <li>Fails on glass doors (weak edges)</li>
+                    <li>Confused by windows, posters, cabinets</li>
+                    <li>Sensitive to occlusions (people blocking door)</li>
+                    <li>Struggles with curved or non-rectangular doors</li>
+                </ul>
+            </div>
+
+            <h3>Method 2: Vanishing Point Detection</h3>
+            <p>
+                In hallway scenes, parallel lines (walls, floor tiles) converge to a vanishing point. Doors often 
+                align with these vanishing lines, providing a strong geometric cue <a href="bibliography.html#ref2">[2]</a>.
+            </p>
+
+            <div class="algorithm-box">
+                <h4>Algorithm: Vanishing Point-Based Detection</h4>
+                <ol class="algorithm-steps">
+                    <li><strong>Line Detection:</strong> Extract all lines using Hough Transform</li>
+                    <li><strong>Vanishing Point Estimation:</strong> Find intersection of parallel line groups</li>
+                    <li><strong>Orientation Alignment:</strong> Identify vertical lines aligned with vanishing point</li>
+                    <li><strong>Door Hypothesis:</strong> Rectangles aligned with vanishing geometry are door candidates</li>
+                    <li><strong>Scoring:</strong> Rank candidates by alignment quality and aspect ratio</li>
+                </ol>
+            </div>
+
+            <div class="image-container">
+                <img src="images/vanishing-point.jpg" alt="Vanishing point detection in hallway" class="main-image">
+                <p class="image-caption">Figure 8: Vanishing point (red) and door alignment in hallway scene [Placeholder]</p>
+            </div>
+
+            <p>
+                <strong>Advantage:</strong> Exploits 3D scene geometry, works well in corridors<br>
+                <strong>Limitation:</strong> Requires structured environments (hallways), fails in open rooms
+            </p>
+
+            <h3>Method 3: Color and Texture Analysis</h3>
+            <p>
+                Doors often have distinctive colors (wood tones, painted surfaces) and textures (wood grain, metal) 
+                that differ from surrounding walls.
+            </p>
+
+            <div class="algorithm-box">
+                <h4>Algorithm: Color-Based Segmentation</h4>
+                <ol class="algorithm-steps">
+                    <li><strong>Color Space Conversion:</strong> Convert RGB to HSV (Hue, Saturation, Value)</li>
+                    <li><strong>Color Clustering:</strong> Apply k-means clustering to group similar colors</li>
+                    <li><strong>Region Growing:</strong> Expand regions with door-like colors (browns, grays)</li>
+                    <li><strong>Shape Filtering:</strong> Keep only rectangular regions with door proportions</li>
+                    <li><strong>Texture Verification:</strong> Compute Local Binary Patterns (LBP) to verify wood/metal texture</li>
+                </ol>
+            </div>
+
+            <div class="code-block">
+<pre>
+# Color-based door detection pseudocode
+def detect_door_color(image):
+    # Convert to HSV for better color separation
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    
+    # Define door color ranges (brown wood, gray metal)
+    wood_lower = np.array([10, 50, 50])
+    wood_upper = np.array([30, 255, 200])
+    metal_lower = np.array([0, 0, 100])
+    metal_upper = np.array([180, 50, 200])
+    
+    # Create masks for door colors
+    wood_mask = cv2.inRange(hsv, wood_lower, wood_upper)
+    metal_mask = cv2.inRange(hsv, metal_lower, metal_upper)
+    door_mask = cv2.bitwise_or(wood_mask, metal_mask)
+    
+    # Find contours in mask
+    contours, _ = cv2.findContours(door_mask, cv2.RETR_EXTERNAL, 
+                                    cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Filter by shape
+    doors = []
+    for cnt in contours:
+        x, y, w, h = cv2.boundingRect(cnt)
+        if 1.5 &lt; h/w &lt; 3.5 and w*h &gt; 5000:  # Aspect ratio and size
+            doors.append((x, y, w, h))
+    
+    return doors
+</pre>
+            </div>
+
+            <p>
+                <strong>Advantage:</strong> Complements edge-based methods, works on low-contrast doors<br>
+                <strong>Limitation:</strong> Sensitive to lighting changes, fails on white/glass doors
+            </p>
+
+            <h3>Method 4: Handle and Keyhole Detection</h3>
+            <p>
+                Door handles, knobs, and keyholes are distinctive features that can confirm door presence.
+            </p>
+
+            <div class="info-box">
+                <h4>Feature Detection Approach</h4>
+                <p>
+                    Use template matching or feature descriptors (SIFT, SURF) to find handle-like objects:
+                </p>
+                <ol>
+                    <li>Extract keypoints using SIFT/SURF</li>
+                    <li>Match against handle templates</li>
+                    <li>Cluster matches to find handle locations</li>
+                    <li>Expand search region around handles to find full door</li>
+                </ol>
+            </div>
+
+            <div class="image-container">
+                <img src="images/handle-detection.jpg" alt="Door handle detection using feature matching" class="main-image">
+                <p class="image-caption">Figure 9: Handle detection (green box) confirming door presence [Placeholder]</p>
+            </div>
+
+            <h3>Method 5: Symmetry Detection</h3>
+            <p>
+                Many doors exhibit vertical symmetry (double doors, centered handles). Detecting symmetry can 
+                improve detection confidence.
+            </p>
+
+            <div class="code-block">
+<pre>
+# Symmetry detection pseudocode
+def check_symmetry(region):
+    # Split region vertically down the middle
+    left_half = region[:, :region.shape[1]//2]
+    right_half = region[:, region.shape[1]//2:]
+    
+    # Flip right half horizontally
+    right_flipped = cv2.flip(right_half, 1)
+    
+    # Compute similarity (normalized cross-correlation)
+    similarity = cv2.matchTemplate(left_half, right_flipped, 
+                                   cv2.TM_CCOEFF_NORMED)
+    
+    return similarity &gt; 0.7  # High symmetry threshold
+</pre>
+            </div>
+
+            <h3>Combining Classical Methods</h3>
+            <p>
+                In practice, the best results come from combining multiple classical techniques:
+            </p>
+
+            <div class="algorithm-box">
+                <h4>Hybrid Classical Pipeline</h4>
+                <ol class="algorithm-steps">
+                    <li><strong>Coarse Detection:</strong> Use edge detection to find rectangular candidates (fast)</li>
+                    <li><strong>Color Validation:</strong> Check if candidate has door-like colors</li>
+                    <li><strong>Geometric Refinement:</strong> Verify alignment with vanishing point (if in hallway)</li>
+                    <li><strong>Feature Confirmation:</strong> Look for handles/knobs within candidate region</li>
+                    <li><strong>Symmetry Check:</strong> Boost confidence if region is symmetric</li>
+                    <li><strong>Scoring:</strong> Combine all cues into final confidence score</li>
+                </ol>
+            </div>
+
+            <p>
+                This multi-cue approach achieves ~70-80% accuracy on standard indoor datasets, with processing 
+                times of 50-100ms per frame on modern smartphones <a href="bibliography.html#ref1">[1]</a>.
+            </p>
+
+            <h3>Performance Comparison</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background: var(--primary-color); color: white;">
+                        <th style="padding: 1rem; text-align: left;">Method</th>
+                        <th style="padding: 1rem; text-align: left;">Accuracy</th>
+                        <th style="padding: 1rem; text-align: left;">Speed (ms)</th>
+                        <th style="padding: 1rem; text-align: left;">Best Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">Edge Detection</td>
+                        <td style="padding: 1rem;">60-70%</td>
+                        <td style="padding: 1rem;">30-50</td>
+                        <td style="padding: 1rem;">High-contrast doors</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">Vanishing Point</td>
+                        <td style="padding: 1rem;">65-75%</td>
+                        <td style="padding: 1rem;">80-120</td>
+                        <td style="padding: 1rem;">Hallway scenes</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">Color Segmentation</td>
+                        <td style="padding: 1rem;">55-65%</td>
+                        <td style="padding: 1rem;">40-60</td>
+                        <td style="padding: 1rem;">Colored doors</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">Handle Detection</td>
+                        <td style="padding: 1rem;">50-60%</td>
+                        <td style="padding: 1rem;">100-150</td>
+                        <td style="padding: 1rem;">Close-range confirmation</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;"><strong>Hybrid (All)</strong></td>
+                        <td style="padding: 1rem;"><strong>70-80%</strong></td>
+                        <td style="padding: 1rem;"><strong>150-200</strong></td>
+                        <td style="padding: 1rem;"><strong>General purpose</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Classical methods exploit geometric, color, and texture cues</li>
+                <li>Edge detection is fast but struggles with glass doors</li>
+                <li>Vanishing point methods work well in structured hallways</li>
+                <li>Combining multiple cues improves robustness</li>
+                <li>Classical methods are interpretable and lightweight</li>
+                <li>Accuracy plateaus around 70-80% on diverse datasets</li>
+            </ul>
+
+            <div class="navigation-buttons" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a href="sensors.html" class="btn">← Previous: Sensors</a>
+                <a href="learning.html" class="btn btn-primary">Next: Learning Methods →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nandini - Computer Vision Tutorial Project</p>
+    </footer>
+</body>
+</html>
+

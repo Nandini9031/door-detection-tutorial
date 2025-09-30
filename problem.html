@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem & Users - Door Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">Door Detection Tutorial</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="problem.html" class="active">Problem & Users</a></li>
+                <li><a href="sensors.html">Sensors</a></li>
+                <li><a href="classical.html">Classical Methods</a></li>
+                <li><a href="learning.html">Learning Methods</a></li>
+                <li><a href="evaluation.html">Success & Failures</a></li>
+                <li><a href="challenges.html">Challenges</a></li>
+                <li><a href="future.html">Future</a></li>
+                <li><a href="quiz.html">Interactive Quiz</a></li>
+                <li><a href="bibliography.html">Bibliography</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="content-section">
+            <div class="audio-player">
+                <p>🔊 <strong>Audio Narration:</strong> Listen to this section</p>
+                <audio controls>
+                    <source src="audio/problem.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="audio-note"><em>Note: Add your recorded narration as audio/problem.mp3</em></p>
+            </div>
+
+            <h2>1. Problem Definition & Target Users</h2>
+            
+            <h3>The Indoor Navigation Challenge</h3>
+            <p>
+                Indoor navigation presents unique challenges compared to outdoor wayfinding. While GPS works well 
+                outdoors, it fails inside buildings due to signal attenuation. For people with low vision or seniors 
+                with mobility challenges, navigating unfamiliar indoor spaces—hospitals, universities, shopping malls, 
+                office buildings—can be daunting and sometimes dangerous <a href="bibliography.html#ref1">[1]</a>.
+            </p>
+
+            <div class="image-container">
+                <img src="images/indoor-navigation.jpg" alt="Person with low vision navigating indoor hallway" class="main-image">
+                <p class="image-caption">Figure 2: Indoor navigation challenges for low-vision users [Placeholder - replace with actual image]</p>
+            </div>
+
+            <h3>Why Doors Matter as Landmarks</h3>
+            <p>
+                Doors serve as critical landmarks in indoor environments for several reasons:
+            </p>
+            
+            <div class="highlight-box">
+                <h3>🚪 Doors as Navigation Anchors</h3>
+                <ul>
+                    <li><strong>Transition Points:</strong> Doors mark transitions between rooms, hallways, and spaces</li>
+                    <li><strong>Destination Markers:</strong> Finding the right door often means reaching your destination</li>
+                    <li><strong>Orientation Cues:</strong> Door locations help users understand spatial layout</li>
+                    <li><strong>Safety Exits:</strong> Emergency exits are critical for safety and evacuation</li>
+                    <li><strong>Accessibility Features:</strong> Doors often have room numbers, signs, and accessibility markers</li>
+                </ul>
+            </div>
+
+            <p>
+                Unlike walls or floors, doors have distinctive visual features: rectangular shapes, handles, 
+                frames, and often contrasting colors. These features make them theoretically detectable by 
+                computer vision systems <a href="bibliography.html#ref2">[2]</a>.
+            </p>
+
+            <h3>Target User Groups</h3>
+            
+            <h4>1. People with Low Vision</h4>
+            <p>
+                According to the World Health Organization, approximately 285 million people worldwide have 
+                visual impairments. For this population, mobile door detection can:
+            </p>
+            <ul>
+                <li>Provide audio feedback when approaching a door</li>
+                <li>Indicate door position (left, right, center) via spatial audio</li>
+                <li>Identify door handles and opening mechanisms</li>
+                <li>Read door signs and room numbers using OCR</li>
+                <li>Warn about obstacles near doorways</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="images/low-vision-user.jpg" alt="Low vision user with smartphone using door detection app" class="main-image">
+                <p class="image-caption">Figure 3: Mobile door detection assisting a low-vision user [Placeholder]</p>
+            </div>
+
+            <h4>2. Seniors with Mobility Challenges</h4>
+            <p>
+                Older adults often experience reduced vision, slower reaction times, and mobility limitations. 
+                Door detection helps by:
+            </p>
+            <ul>
+                <li>Providing advance warning of doors to prepare for opening</li>
+                <li>Identifying automatic vs. manual doors</li>
+                <li>Detecting door swing direction to avoid collisions</li>
+                <li>Highlighting accessible entrances with ramps or automatic openers</li>
+            </ul>
+
+            <h4>3. Additional Beneficiaries</h4>
+            <p>
+                Beyond the primary user groups, door detection technology benefits:
+            </p>
+            <ul>
+                <li><strong>Delivery robots:</strong> Autonomous robots navigating buildings</li>
+                <li><strong>AR applications:</strong> Augmented reality wayfinding overlays</li>
+                <li><strong>Building management:</strong> Automated door monitoring and maintenance</li>
+                <li><strong>Emergency responders:</strong> Rapid building layout understanding</li>
+            </ul>
+
+            <h3>The Mobile Context</h3>
+            <p>
+                Why focus on mobile devices specifically? Smartphones offer several advantages for door detection:
+            </p>
+
+            <div class="info-box">
+                <h4>📱 Mobile Advantages</h4>
+                <ul>
+                    <li><strong>Ubiquity:</strong> Most users already own smartphones</li>
+                    <li><strong>Sensors:</strong> Built-in cameras, accelerometers, gyroscopes</li>
+                    <li><strong>Feedback:</strong> Audio, haptic, and visual output capabilities</li>
+                    <li><strong>Portability:</strong> Always available, hands-free mounting options</li>
+                    <li><strong>Connectivity:</strong> Can access cloud services for heavy computation</li>
+                    <li><strong>Cost:</strong> No additional hardware required</li>
+                </ul>
+            </div>
+
+            <p>
+                However, mobile deployment also introduces constraints: limited computational power, battery life, 
+                real-time processing requirements, and varying lighting conditions <a href="bibliography.html#ref3">[3]</a>.
+            </p>
+
+            <h3>Problem Statement</h3>
+            <p>
+                The core problem can be formally stated as:
+            </p>
+
+            <div class="algorithm-box">
+                <h4>Problem Formulation</h4>
+                <p>
+                    <strong>Input:</strong> RGB image stream from mobile camera (optionally with depth data)<br>
+                    <strong>Output:</strong> Door locations (bounding boxes), door states (open/closed), 
+                    door types (automatic/manual), and confidence scores<br>
+                    <strong>Constraints:</strong> Real-time processing (&lt;100ms latency), mobile hardware, 
+                    varying lighting, diverse door types<br>
+                    <strong>Success Criteria:</strong> &gt;90% detection accuracy, &lt;5% false positive rate, 
+                    robust to occlusions and reflections
+                </p>
+            </div>
+
+            <h3>Real-World Scenarios</h3>
+            <p>
+                Consider these typical use cases:
+            </p>
+
+            <div class="highlight-box">
+                <h3>📍 Scenario 1: Hospital Navigation</h3>
+                <p>
+                    Maria, a 68-year-old with macular degeneration, needs to find Room 342 in a large hospital. 
+                    Her smartphone app detects doors as she walks down the hallway, announces room numbers via 
+                    audio, and vibrates when she's directly in front of the correct door.
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <h3>📍 Scenario 2: University Campus</h3>
+                <p>
+                    James, a blind graduate student, uses door detection to navigate his university building. 
+                    The app identifies lecture hall entrances, distinguishes between main doors and emergency 
+                    exits, and warns him about partially open doors that could be collision hazards.
+                </p>
+            </div>
+
+            <div class="image-container">
+                <img src="images/use-case-diagram.jpg" alt="Diagram showing door detection use cases" class="main-image">
+                <p class="image-caption">Figure 4: Common door detection scenarios in indoor navigation [Placeholder]</p>
+            </div>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Doors are essential landmarks for indoor navigation</li>
+                <li>Low-vision users and seniors are primary beneficiaries</li>
+                <li>Mobile devices offer ubiquitous, cost-effective deployment</li>
+                <li>Real-time, accurate detection is critical for user safety</li>
+                <li>The problem requires balancing accuracy with computational efficiency</li>
+            </ul>
+
+            <div class="navigation-buttons" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a href="index.html" class="btn">← Back to Home</a>
+                <a href="sensors.html" class="btn btn-primary">Next: Sensor Possibilities →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nandini - Computer Vision Tutorial Project</p>
+    </footer>
+</body>
+</html>
+

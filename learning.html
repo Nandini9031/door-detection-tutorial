@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Methods - Door Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">Door Detection Tutorial</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="problem.html">Problem & Users</a></li>
+                <li><a href="sensors.html">Sensors</a></li>
+                <li><a href="classical.html">Classical Methods</a></li>
+                <li><a href="learning.html" class="active">Learning Methods</a></li>
+                <li><a href="evaluation.html">Success & Failures</a></li>
+                <li><a href="challenges.html">Challenges</a></li>
+                <li><a href="future.html">Future</a></li>
+                <li><a href="quiz.html">Interactive Quiz</a></li>
+                <li><a href="bibliography.html">Bibliography</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="content-section">
+            <div class="audio-player">
+                <p>🔊 <strong>Audio Narration:</strong> Listen to this section</p>
+                <audio controls>
+                    <source src="audio/learning.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="audio-note"><em>Note: Add your recorded narration as audio/learning.mp3</em></p>
+            </div>
+
+            <h2>4. Deep Learning Methods for Door Detection</h2>
+            
+            <h3>The Deep Learning Revolution</h3>
+            <p>
+                Since 2012, deep learning has transformed computer vision. For door detection, convolutional neural 
+                networks (CNNs) can learn complex patterns from data, achieving 85-95% accuracy compared to 70-80% 
+                for classical methods <a href="bibliography.html#ref2">[2]</a>.
+            </p>
+
+            <p>
+                However, mobile deployment introduces unique challenges: limited memory, battery constraints, and 
+                real-time processing requirements. This section explores mobile-optimized deep learning architectures.
+            </p>
+
+            <h3>Object Detection Frameworks</h3>
+            <p>
+                Door detection is an <strong>object detection</strong> task: locating and classifying doors in images. 
+                Modern detectors fall into two categories:
+            </p>
+
+            <div class="highlight-box">
+                <h3>Two-Stage Detectors (R-CNN Family)</h3>
+                <ul>
+                    <li><strong>Process:</strong> (1) Propose regions, (2) Classify each region</li>
+                    <li><strong>Examples:</strong> Faster R-CNN, Mask R-CNN</li>
+                    <li><strong>Pros:</strong> High accuracy, good for small objects</li>
+                    <li><strong>Cons:</strong> Slow (200-500ms), too heavy for mobile</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <h3>One-Stage Detectors (YOLO/SSD Family)</h3>
+                <ul>
+                    <li><strong>Process:</strong> Single pass through network predicts boxes and classes</li>
+                    <li><strong>Examples:</strong> YOLO, SSD, EfficientDet</li>
+                    <li><strong>Pros:</strong> Fast (20-50ms), suitable for mobile</li>
+                    <li><strong>Cons:</strong> Slightly lower accuracy on small objects</li>
+                </ul>
+            </div>
+
+            <p>
+                For mobile door detection, <strong>one-stage detectors</strong> are preferred due to speed requirements.
+            </p>
+
+            <h3>YOLO for Mobile Door Detection</h3>
+            <p>
+                YOLO (You Only Look Once) is a popular real-time object detector. Recent variants like YOLOv5, 
+                YOLOv8, and YOLO-NAS offer mobile-friendly versions <a href="bibliography.html#ref2">[2]</a>.
+            </p>
+
+            <div class="algorithm-box">
+                <h4>YOLOv8-Nano Architecture for Doors</h4>
+                <ol class="algorithm-steps">
+                    <li><strong>Input:</strong> 640×640 RGB image (resized from camera)</li>
+                    <li><strong>Backbone:</strong> Lightweight CNN extracts features (CSPDarknet-Nano)</li>
+                    <li><strong>Neck:</strong> Feature Pyramid Network (FPN) combines multi-scale features</li>
+                    <li><strong>Head:</strong> Predicts bounding boxes, class scores, and confidence</li>
+                    <li><strong>Post-processing:</strong> Non-Maximum Suppression (NMS) removes duplicates</li>
+                    <li><strong>Output:</strong> Door bounding boxes with confidence scores</li>
+                </ol>
+            </div>
+
+            <div class="image-container">
+                <img src="images/yolo-architecture.jpg" alt="YOLOv8 architecture diagram" class="main-image">
+                <p class="image-caption">Figure 10: YOLOv8-Nano architecture for mobile door detection [Placeholder]</p>
+            </div>
+
+            <div class="code-block">
+<pre>
+# Training YOLOv8 for door detection (Python + Ultralytics)
+from ultralytics import YOLO
+
+# Load pretrained YOLOv8-Nano model
+model = YOLO('yolov8n.pt')
+
+# Train on custom door dataset
+results = model.train(
+    data='door_dataset.yaml',  # Dataset config
+    epochs=100,
+    imgsz=640,
+    batch=16,
+    device='cuda',  # Use GPU for training
+    project='door_detection',
+    name='yolov8n_doors'
+)
+
+# Export to mobile formats
+model.export(format='tflite')  # TensorFlow Lite for Android
+model.export(format='coreml')  # Core ML for iOS
+</pre>
+            </div>
+
+            <h3>Mobile-Optimized Architectures</h3>
+
+            <h4>1. MobileNet-SSD</h4>
+            <p>
+                Combines MobileNet backbone (depthwise separable convolutions) with SSD detector.
+            </p>
+            <div class="info-box">
+                <h4>MobileNet Key Innovation: Depthwise Separable Convolutions</h4>
+                <p>
+                    Standard convolution: 3×3×C×N parameters (C input channels, N output channels)<br>
+                    Depthwise separable: 3×3×C + 1×1×C×N parameters (8-9× fewer parameters!)
+                </p>
+                <p><strong>Result:</strong> 30-50ms inference on mobile, 2-4 MB model size</p>
+            </div>
+
+            <h4>2. EfficientDet-Lite</h4>
+            <p>
+                Uses compound scaling to balance depth, width, and resolution for optimal efficiency.
+            </p>
+            <ul>
+                <li><strong>EfficientDet-Lite0:</strong> 4.4M parameters, 40ms on Pixel 4</li>
+                <li><strong>EfficientDet-Lite1:</strong> 5.7M parameters, 60ms, higher accuracy</li>
+            </ul>
+
+            <h4>3. YOLOv8-Nano</h4>
+            <p>
+                Latest YOLO variant optimized for edge devices.
+            </p>
+            <ul>
+                <li><strong>Model size:</strong> 6.2 MB</li>
+                <li><strong>Inference:</strong> 25-35ms on modern smartphones</li>
+                <li><strong>Accuracy:</strong> 85-90% mAP on door datasets</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="images/mobile-architectures.jpg" alt="Comparison of mobile architectures" class="main-image">
+                <p class="image-caption">Figure 11: Mobile architecture comparison - accuracy vs. speed [Placeholder]</p>
+            </div>
+
+            <h3>Training Data Requirements</h3>
+            <p>
+                Deep learning models require large labeled datasets. For door detection:
+            </p>
+
+            <div class="highlight-box">
+                <h3>📊 Dataset Needs</h3>
+                <ul>
+                    <li><strong>Minimum:</strong> 1,000-2,000 annotated images</li>
+                    <li><strong>Recommended:</strong> 5,000-10,000 images for robustness</li>
+                    <li><strong>Diversity:</strong> Multiple door types, lighting conditions, viewpoints</li>
+                    <li><strong>Annotations:</strong> Bounding boxes around each door</li>
+                </ul>
+            </div>
+
+            <h4>Data Augmentation</h4>
+            <p>
+                To increase dataset size and robustness, apply augmentations during training:
+            </p>
+
+            <div class="code-block">
+<pre>
+# Data augmentation for door detection
+augmentations = [
+    RandomBrightnessContrast(p=0.5),  # Lighting variations
+    HorizontalFlip(p=0.5),             # Mirror images
+    Rotate(limit=10, p=0.3),           # Slight rotations
+    GaussianBlur(p=0.2),               # Motion blur
+    RandomShadow(p=0.3),               # Shadow effects
+    Cutout(num_holes=3, p=0.2)         # Occlusions
+]
+</pre>
+            </div>
+
+            <h3>Transfer Learning</h3>
+            <p>
+                Training from scratch requires massive datasets. <strong>Transfer learning</strong> leverages 
+                pretrained models to reduce data needs:
+            </p>
+
+            <div class="algorithm-box">
+                <h4>Transfer Learning Pipeline</h4>
+                <ol class="algorithm-steps">
+                    <li><strong>Start:</strong> Load model pretrained on COCO dataset (80 object classes)</li>
+                    <li><strong>Freeze:</strong> Keep early layers frozen (general features like edges)</li>
+                    <li><strong>Fine-tune:</strong> Train only final layers on door dataset</li>
+                    <li><strong>Unfreeze:</strong> Gradually unfreeze earlier layers with low learning rate</li>
+                    <li><strong>Result:</strong> Good performance with only 1,000-2,000 door images</li>
+                </ol>
+            </div>
+
+            <h3>On-Device vs. Cloud Inference</h3>
+            <p>
+                Mobile deployment offers two options:
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background: var(--primary-color); color: white;">
+                        <th style="padding: 1rem; text-align: left;">Aspect</th>
+                        <th style="padding: 1rem; text-align: left;">On-Device</th>
+                        <th style="padding: 1rem; text-align: left;">Cloud-Based</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;"><strong>Latency</strong></td>
+                        <td style="padding: 1rem;">25-50ms</td>
+                        <td style="padding: 1rem;">200-500ms (network delay)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><strong>Privacy</strong></td>
+                        <td style="padding: 1rem;">✅ Data stays local</td>
+                        <td style="padding: 1rem;">❌ Images sent to server</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;"><strong>Offline Use</strong></td>
+                        <td style="padding: 1rem;">✅ Works without internet</td>
+                        <td style="padding: 1rem;">❌ Requires connection</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><strong>Model Size</strong></td>
+                        <td style="padding: 1rem;">Limited (5-20 MB)</td>
+                        <td style="padding: 1rem;">Unlimited (can use large models)</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;"><strong>Accuracy</strong></td>
+                        <td style="padding: 1rem;">85-90%</td>
+                        <td style="padding: 1rem;">90-95% (larger models)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;"><strong>Battery</strong></td>
+                        <td style="padding: 1rem;">Higher drain</td>
+                        <td style="padding: 1rem;">Lower (offloads computation)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                <strong>Recommendation:</strong> Use on-device inference for accessibility apps (low latency, privacy, 
+                offline support are critical).
+            </p>
+
+            <h3>Model Optimization Techniques</h3>
+
+            <h4>1. Quantization</h4>
+            <p>
+                Reduce model precision from 32-bit floats to 8-bit integers.
+            </p>
+            <div class="code-block">
+<pre>
+# Post-training quantization (TensorFlow Lite)
+converter = tf.lite.TFLiteConverter.from_saved_model('door_model')
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.target_spec.supported_types = [tf.int8]
+tflite_model = converter.convert()
+
+# Result: 4× smaller model, 2-3× faster, ~1% accuracy loss
+</pre>
+            </div>
+
+            <h4>2. Pruning</h4>
+            <p>
+                Remove unimportant weights (near-zero values) to reduce model size.
+            </p>
+            <ul>
+                <li><strong>Benefit:</strong> 30-50% size reduction with minimal accuracy loss</li>
+                <li><strong>Trade-off:</strong> Requires retraining</li>
+            </ul>
+
+            <h4>3. Knowledge Distillation</h4>
+            <p>
+                Train a small "student" model to mimic a large "teacher" model.
+            </p>
+            <ul>
+                <li><strong>Process:</strong> Student learns from teacher's soft predictions</li>
+                <li><strong>Result:</strong> Compact model with near-teacher accuracy</li>
+            </ul>
+
+            <h3>Performance Comparison</h3>
+            <table style="width: 100%; border-collapse: collapse; margin: 2rem 0;">
+                <thead>
+                    <tr style="background: var(--primary-color); color: white;">
+                        <th style="padding: 1rem; text-align: left;">Model</th>
+                        <th style="padding: 1rem; text-align: left;">Size (MB)</th>
+                        <th style="padding: 1rem; text-align: left;">Speed (ms)</th>
+                        <th style="padding: 1rem; text-align: left;">Accuracy (mAP)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">Classical (Hybrid)</td>
+                        <td style="padding: 1rem;">&lt;1</td>
+                        <td style="padding: 1rem;">150-200</td>
+                        <td style="padding: 1rem;">70-75%</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">MobileNet-SSD</td>
+                        <td style="padding: 1rem;">4.3</td>
+                        <td style="padding: 1rem;">40-60</td>
+                        <td style="padding: 1rem;">82-85%</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">YOLOv8-Nano</td>
+                        <td style="padding: 1rem;">6.2</td>
+                        <td style="padding: 1rem;">25-35</td>
+                        <td style="padding: 1rem;">85-88%</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">EfficientDet-Lite0</td>
+                        <td style="padding: 1rem;">4.4</td>
+                        <td style="padding: 1rem;">35-45</td>
+                        <td style="padding: 1rem;">83-86%</td>
+                    </tr>
+                    <tr style="background: var(--light-bg);">
+                        <td style="padding: 1rem;">YOLOv8-Small</td>
+                        <td style="padding: 1rem;">22</td>
+                        <td style="padding: 1rem;">50-70</td>
+                        <td style="padding: 1rem;">88-92%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Emerging Approach: Vision-Language Models (VLMs)</h3>
+            <p>
+                The most recent research explores foundation models like CLIP, GPT-4V, and LLaVA for door detection.
+                These models represent a paradigm shift from task-specific training to zero-shot learning
+                <a href="bibliography.html#ref6">[6]</a> <a href="bibliography.html#ref8">[8]</a>.
+            </p>
+
+            <div class="highlight-box">
+                <h3>🆕 VLM-Based Door Detection (2022-2024 Research)</h3>
+                <p><strong>How it works:</strong></p>
+                <ol>
+                    <li>Input: RGB image + natural language prompt ("Detect all doors in this image")</li>
+                    <li>VLM processes both modalities using transformer architecture</li>
+                    <li>Output: Bounding boxes + natural language descriptions</li>
+                </ol>
+
+                <p><strong>Research findings:</strong></p>
+                <ul>
+                    <li><strong>Mukherjee et al. (2022):</strong> CLIP achieves 76% accuracy zero-shot, 84% with 100 examples <a href="bibliography.html#ref6">[6]</a></li>
+                    <li><strong>Zhang et al. (2024):</strong> GPT-4V achieves 81% accuracy with no training <a href="bibliography.html#ref8">[8]</a></li>
+                    <li><strong>Advantage:</strong> Generalizes to novel door types, provides natural language output</li>
+                    <li><strong>Limitation:</strong> 2-5 second latency (too slow for real-time navigation)</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>💡 Why VLMs Matter for Accessibility</h4>
+                <p>
+                    Traditional models output: <code>[x:120, y:340, w:80, h:200, class:"door", conf:0.92]</code>
+                </p>
+                <p>
+                    VLMs output: <em>"There is a wooden door on your left, about 3 meters away. It appears to be
+                    partially open. There is a silver handle at waist height."</em>
+                </p>
+                <p>
+                    This natural language output is far more useful for blind users than numeric coordinates.
+                    VLMs can also answer questions: "Is this door accessible?" → "Yes, I see an automatic door
+                    opener button and a ramp."
+                </p>
+            </div>
+
+            <h4>VLM Challenges for Mobile Deployment</h4>
+            <ul>
+                <li><strong>Latency:</strong> Current VLMs (GPT-4V) take 2-5 seconds per image (vs. 25ms for YOLO)</li>
+                <li><strong>Model size:</strong> Foundation models are 1-10 GB (vs. 6 MB for YOLOv8-Nano)</li>
+                <li><strong>Cost:</strong> Cloud API calls cost $0.01-0.05 per image</li>
+                <li><strong>Privacy:</strong> Sending images to cloud servers raises privacy concerns</li>
+            </ul>
+
+            <p>
+                <strong>Future direction:</strong> Researchers are developing compressed on-device VLMs (MobileVLM, LLaVA-Phi)
+                that could run locally on smartphones, combining VLM benefits with mobile constraints.
+            </p>
+
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Deep learning achieves 85-95% accuracy vs. 70-80% for classical methods</li>
+                <li>One-stage detectors (YOLO, SSD) are best for mobile real-time use</li>
+                <li><strong>Recent research (2022-2024):</strong> VLMs enable zero-shot detection with natural language output</li>
+                <li>Transfer learning reduces data requirements to 1,000-2,000 images</li>
+                <li>On-device inference is preferred for accessibility (latency, privacy, offline)</li>
+                <li>Quantization and pruning enable deployment on resource-constrained devices</li>
+                <li>YOLOv8-Nano offers best balance of speed, size, and accuracy for traditional CNNs</li>
+                <li><strong>Emerging:</strong> On-device VLMs may revolutionize assistive navigation in coming years</li>
+            </ul>
+
+            <div class="navigation-buttons" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a href="classical.html" class="btn">← Previous: Classical Methods</a>
+                <a href="evaluation.html" class="btn btn-primary">Next: Success & Failures →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nandini - Computer Vision Tutorial Project</p>
+    </footer>
+</body>
+</html>
+

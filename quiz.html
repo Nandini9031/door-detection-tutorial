@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz - Door Detection Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-title">Door Detection Tutorial</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="problem.html">Problem & Users</a></li>
+                <li><a href="sensors.html">Sensors</a></li>
+                <li><a href="classical.html">Classical Methods</a></li>
+                <li><a href="learning.html">Learning Methods</a></li>
+                <li><a href="evaluation.html">Success & Failures</a></li>
+                <li><a href="challenges.html">Challenges</a></li>
+                <li><a href="future.html">Future</a></li>
+                <li><a href="quiz.html" class="active">Interactive Quiz</a></li>
+                <li><a href="bibliography.html">Bibliography</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="content-section">
+            <h2>Interactive Quiz: "Is This a Door?"</h2>
+            <p>
+                Test your understanding of door detection challenges! For each scenario, decide whether the 
+                detection system would likely succeed or fail, and why.
+            </p>
+
+            <div class="quiz-container">
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <h3>Question 1: Standard Wooden Door</h3>
+                    <div class="image-container">
+                        <img src="images/quiz-wooden-door.jpg" alt="Standard wooden door in hallway" class="main-image" style="max-width: 400px;">
+                        <p class="image-caption">Scenario: Brown wooden door with visible handle, good lighting, frontal view [Placeholder]</p>
+                    </div>
+                    <p><strong>Will a YOLOv8-Nano model detect this door successfully?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q1" value="a">
+                                A) Yes, with high confidence (&gt;90%)
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q1" value="b">
+                                B) Maybe, with medium confidence (50-70%)
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q1" value="c">
+                                C) No, likely to miss it
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(1, 'a')" class="btn">Submit Answer</button>
+                    <div id="result1" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <h3>Question 2: Glass Door</h3>
+                    <div class="image-container">
+                        <img src="images/quiz-glass-door.jpg" alt="Transparent glass door" class="main-image" style="max-width: 400px;">
+                        <p class="image-caption">Scenario: Transparent glass door with minimal frame, reflections visible [Placeholder]</p>
+                    </div>
+                    <p><strong>What is the main challenge for detecting this door?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q2" value="a">
+                                A) Wrong color (glass is not brown/gray)
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q2" value="b">
+                                B) Weak edges and transparency make it nearly invisible
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q2" value="c">
+                                C) Too large to fit in the camera frame
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(2, 'b')" class="btn">Submit Answer</button>
+                    <div id="result2" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <h3>Question 3: Partially Occluded Door</h3>
+                    <div class="image-container">
+                        <img src="images/quiz-occluded.jpg" alt="Door with person standing in front" class="main-image" style="max-width: 400px;">
+                        <p class="image-caption">Scenario: Door with person blocking lower 40% [Placeholder]</p>
+                    </div>
+                    <p><strong>How can we improve detection of partially occluded doors?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q3" value="a">
+                                A) Train on occluded examples and use multi-frame voting
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q3" value="b">
+                                B) Increase image resolution to 4K
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q3" value="c">
+                                C) Use only color-based detection
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(3, 'a')" class="btn">Submit Answer</button>
+                    <div id="result3" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question">
+                    <h3>Question 4: Window vs. Door</h3>
+                    <div class="image-container">
+                        <img src="images/quiz-window.jpg" alt="Tall window that looks like a door" class="main-image" style="max-width: 400px;">
+                        <p class="image-caption">Scenario: Floor-to-ceiling window with similar shape to door [Placeholder]</p>
+                    </div>
+                    <p><strong>What feature would best distinguish this window from a door?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q4" value="a">
+                                A) Presence of a handle at 90-110cm height
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q4" value="b">
+                                B) Color of the frame
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q4" value="c">
+                                C) Size of the rectangle
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(4, 'a')" class="btn">Submit Answer</button>
+                    <div id="result4" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question">
+                    <h3>Question 5: Classical vs. Deep Learning</h3>
+                    <p><strong>When would you choose classical edge detection over deep learning?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q5" value="a">
+                                A) When you need maximum accuracy regardless of speed
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q5" value="b">
+                                B) When deploying on very old devices with no GPU/NPU
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q5" value="c">
+                                C) When detecting glass doors
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(5, 'b')" class="btn">Submit Answer</button>
+                    <div id="result5" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 6 -->
+                <div class="quiz-question">
+                    <h3>Question 6: Mobile Optimization</h3>
+                    <p><strong>Which technique reduces model size by 4× with minimal accuracy loss?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q6" value="a">
+                                A) Increasing batch size
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q6" value="b">
+                                B) Quantization (FP32 → INT8)
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q6" value="c">
+                                C) Adding more layers
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(6, 'b')" class="btn">Submit Answer</button>
+                    <div id="result6" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 7 -->
+                <div class="quiz-question">
+                    <h3>Question 7: User Experience</h3>
+                    <p><strong>For a blind user navigating a hallway, what feedback is most helpful?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q7" value="a">
+                                A) Visual bounding box on screen
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q7" value="b">
+                                B) Spatial audio indicating door direction (left/right/center)
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q7" value="c">
+                                C) Email notification when door is detected
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(7, 'b')" class="btn">Submit Answer</button>
+                    <div id="result7" class="quiz-result"></div>
+                </div>
+
+                <!-- Question 8 -->
+                <div class="quiz-question">
+                    <h3>Question 8: Depth Sensors</h3>
+                    <p><strong>What advantage do depth sensors provide for door detection?</strong></p>
+                    <ul class="quiz-options">
+                        <li>
+                            <label>
+                                <input type="radio" name="q8" value="a">
+                                A) They can detect door color better than RGB cameras
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q8" value="b">
+                                B) They can identify planar surfaces and measure distance, helping with glass doors
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="radio" name="q8" value="c">
+                                C) They work better in bright sunlight
+                            </label>
+                        </li>
+                    </ul>
+                    <button onclick="checkAnswer(8, 'b')" class="btn">Submit Answer</button>
+                    <div id="result8" class="quiz-result"></div>
+                </div>
+
+                <!-- Score Display -->
+                <div id="score-display" style="display: none; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, #eff6ff, #f3e8ff); border-radius: 8px; text-align: center;">
+                    <h3>Your Score: <span id="score">0</span>/8</h3>
+                    <p id="score-message"></p>
+                    <button onclick="resetQuiz()" class="btn btn-primary">Retake Quiz</button>
+                </div>
+            </div>
+
+            <div class="navigation-buttons" style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <a href="future.html" class="btn">← Previous: Future & Conclusions</a>
+                <a href="bibliography.html" class="btn btn-primary">Next: Bibliography →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nandini - Computer Vision Tutorial Project</p>
+    </footer>
+
+    <script>
+        let score = 0;
+        let answered = new Set();
+
+        function checkAnswer(questionNum, correctAnswer) {
+            const selected = document.querySelector(`input[name="q${questionNum}"]:checked`);
+            const resultDiv = document.getElementById(`result${questionNum}`);
+            
+            if (!selected) {
+                alert('Please select an answer!');
+                return;
+            }
+
+            // Only count if not already answered
+            if (!answered.has(questionNum)) {
+                answered.add(questionNum);
+                
+                if (selected.value === correctAnswer) {
+                    score++;
+                    resultDiv.className = 'quiz-result correct';
+                    resultDiv.innerHTML = getCorrectFeedback(questionNum);
+                } else {
+                    resultDiv.className = 'quiz-result incorrect';
+                    resultDiv.innerHTML = getIncorrectFeedback(questionNum, correctAnswer);
+                }
+
+                // Show score if all questions answered
+                if (answered.size === 8) {
+                    showFinalScore();
+                }
+            }
+        }
+
+        function getCorrectFeedback(questionNum) {
+            const feedback = {
+                1: '✅ Correct! Standard wooden doors with clear features are detected with &gt;90% confidence by modern deep learning models.',
+                2: '✅ Correct! Glass doors have weak edges and transparency, making them the most challenging door type (30-50% detection rate).',
+                3: '✅ Correct! Training on occluded examples and using multi-frame voting (temporal integration) significantly improves robustness to occlusions.',
+                4: '✅ Correct! Door handles at typical height (90-110cm) are a distinctive feature that windows lack. This helps reduce false positives.',
+                5: '✅ Correct! Classical methods require minimal computation and no GPU, making them suitable for very old or low-end devices.',
+                6: '✅ Correct! Quantization from 32-bit floats to 8-bit integers reduces model size by ~4× with only 1-2% accuracy loss.',
+                7: '✅ Correct! Spatial audio provides directional information that blind users can act on immediately, unlike visual feedback.',
+                8: '✅ Correct! Depth sensors detect planar surfaces and measure distance, which helps identify glass doors that RGB cameras miss.'
+            };
+            return feedback[questionNum];
+        }
+
+        function getIncorrectFeedback(questionNum, correctAnswer) {
+            const feedback = {
+                1: '❌ Incorrect. The correct answer is A. Standard wooden doors with visible handles and good lighting are ideal cases for detection, achieving &gt;90% accuracy.',
+                2: '❌ Incorrect. The correct answer is B. Glass doors are challenging because they have weak edges and are transparent, not because of color or size.',
+                3: '❌ Incorrect. The correct answer is A. Training on occluded data and multi-frame voting are proven techniques for handling occlusions.',
+                4: '❌ Incorrect. The correct answer is A. Door handles at 90-110cm height are a distinctive feature that helps distinguish doors from windows.',
+                5: '❌ Incorrect. The correct answer is B. Classical methods are best when you need to run on old devices without GPU/NPU acceleration.',
+                6: '❌ Incorrect. The correct answer is B. Quantization (converting from 32-bit to 8-bit) reduces model size by ~4× with minimal accuracy loss.',
+                7: '❌ Incorrect. The correct answer is B. Blind users need spatial audio to know where the door is located (left, right, center).',
+                8: '❌ Incorrect. The correct answer is B. Depth sensors provide 3D information that helps detect glass doors and measure distance.'
+            };
+            return feedback[questionNum];
+        }
+
+        function showFinalScore() {
+            const scoreDisplay = document.getElementById('score-display');
+            const scoreSpan = document.getElementById('score');
+            const messageP = document.getElementById('score-message');
+            
+            scoreSpan.textContent = score;
+            
+            if (score === 8) {
+                messageP.innerHTML = '🎉 Perfect score! You have excellent understanding of door detection concepts!';
+            } else if (score >= 6) {
+                messageP.innerHTML = '👍 Great job! You have a solid grasp of the key concepts.';
+            } else if (score >= 4) {
+                messageP.innerHTML = '📚 Good effort! Review the tutorial sections for topics you missed.';
+            } else {
+                messageP.innerHTML = '💪 Keep learning! Go back through the tutorial to strengthen your understanding.';
+            }
+            
+            scoreDisplay.style.display = 'block';
+            scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            score = 0;
+            answered.clear();
+            
+            // Clear all selections
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.checked = false;
+            });
+            
+            // Hide all results
+            document.querySelectorAll('.quiz-result').forEach(result => {
+                result.style.display = 'none';
+                result.className = 'quiz-result';
+            });
+            
+            // Hide score display
+            document.getElementById('score-display').style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
